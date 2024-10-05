@@ -1,0 +1,17 @@
+services:
+  filebrowser:
+    container_name: filebrowser
+    image: filebrowser/filebrowser:latest
+    ports:
+      - 8081:80
+    environment:
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /home/sinfallas:/srv
+    restart: always
+    networks:
+      - filebrowser
+
+networks:
+  filebrowser:

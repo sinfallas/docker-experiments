@@ -1,0 +1,10 @@
+services:
+  rsyslog-gui:
+    environment:
+      - SYSLOG_USERNAME=nombre
+      - SYSLOG_PASSWORD=password
+    ports:
+      - '8081:80'
+      - '514:514/udp'
+    image: aguyonnet/rsyslog-gui:latest
+    restart: always

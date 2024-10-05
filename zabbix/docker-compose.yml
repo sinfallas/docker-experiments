@@ -1,0 +1,89 @@
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    hostname: mysql
+    volumes:
+      - ./db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=VHHMG2SSSpzlQ5j8Y2d8BBIK2GJZyBEn
+      - MYSQL_DATABASE=zabbix
+      - MYSQL_USER=zabbix
+      - MYSQL_PASSWORD=VHHMG2SSSpzlQ5j8Y2d8BBIK2GJZyBEn
+    restart: always
+
+  zabbix-proxy:
+    container_name: zabbix-proxy
+    image: zabbix/zabbix-proxy-mysql:6.0.2-ubuntu
+    ports:
+      - 10051:10051
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 20000
+        hard: 40000
+    mem_limit: 512m
+    environment:
+      - DB_SERVER_HOST=mysql
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=VHHMG2SSSpzlQ5j8Y2d8BBIK2GJZyBEn
+      - ZBX_HOSTNAME=ProxyAWS
+      - ZBX_SERVER_HOST=ip-del-router
+      - ZBX_PROXYMODE=0
+      - ZBX_SERVER_PORT=10051
+      - ZBX_CONFIGFREQUENCY=30
+      - ZBX_TIMEOUT=4
+      - ZBX_LOGSLOWQUERIES=3000
+      #- ZBX_HOSTNAMEITEM=system.hostname
+      #- ZBX_SOURCEIP=
+      #- ZBX_DEBUGLEVEL=3
+      #- ZBX_PROXYLOCALBUFFER=0
+      #- ZBX_PROXYOFFLINEBUFFER=1
+      #- ZBX_PROXYHEARTBEATFREQUENCY=60
+      #- ZBX_DATASENDERFREQUENCY=1
+      #- ZBX_STARTPOLLERS=5
+      #- ZBX_IPMIPOLLERS=0
+      #- ZBX_STARTPOLLERSUNREACHABLE=1
+      #- ZBX_STARTTRAPPERS=5
+      #- ZBX_STARTPINGERS=1
+      #- ZBX_STARTDISCOVERERS=1
+      #- ZBX_STARTHTTPPOLLERS=1
+      #- ZBX_JAVAGATEWAY_ENABLE=false
+      #- ZBX_JAVAGATEWAY=zabbix-java-gateway
+      #- ZBX_JAVAGATEWAYPORT=10052
+      #- ZBX_STARTJAVAPOLLERS=0
+      #- ZBX_STARTVMWARECOLLECTORS=0
+      #- ZBX_VMWAREFREQUENCY=60
+      #- ZBX_VMWAREPERFFREQUENCY=60
+      #- ZBX_VMWARECACHESIZE=8M
+      #- ZBX_VMWARETIMEOUT=10
+      #- ZBX_ENABLE_SNMP_TRAPS=false
+      #- ZBX_LISTENIP=
+      #- ZBX_HOUSEKEEPINGFREQUENCY=1
+      #- ZBX_CACHESIZE=8M
+      #- ZBX_STARTDBSYNCERS=4
+      #- ZBX_HISTORYCACHESIZE=16M
+      #- ZBX_HISTORYINDEXCACHESIZE=4M
+      #- ZBX_TRAPPERIMEOUT=300
+      #- ZBX_UNREACHABLEPERIOD=45
+      #- ZBX_UNAVAILABLEDELAY=60
+      #- ZBX_UNREACHABLEDELAY=15
+      #- ZBX_LOADMODULE="dummy1.so,dummy2.so,dummy10.so"
+      #- ZBX_TLSCONNECT=unencrypted
+      #- ZBX_TLSACCEPT=unencrypted
+      #- ZBX_TLSCAFILE=
+      #- ZBX_TLSCRLFILE=
+      #- ZBX_TLSSERVERCERTISSUER=
+      #- ZBX_TLSSERVERCERTSUBJECT=
+      #- ZBX_TLSCERTFILE=
+      #- ZBX_TLSKEYFILE=
+      #- ZBX_TLSPSKIDENTITY=
+      #- ZBX_TLSPSKFILE=
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      #- ./enc:/var/lib/zabbix/enc:ro
+    stop_grace_period: 1m
+    restart: always
+    depends_on:
+      - mysql

@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+  intranet-db:
+    container_name: intranet-db
+    build:
+      context: ./docker/database2
+    ports:
+     - 3306:3306
+    environment:
+      MYSQL_DATABASE: humhub
+      MYSQL_USER: humhub
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    command: mysqld --sql_mode="STRICT_ALL_TABLES,NO_ENGINE_SUBSTITUTION"
+    restart: on-failure
+    volumes:
+      - intranet-db:/var/lib/mysql
+      - ./docker/database2/mycustom.cnf:/etc/mysql/conf.d/custom.cnf
+    networks:
+      - intranet-net
+
+  intranet-php:
+    container_name: intranet-php
+    build:
+      context: ./docker/api/php
+    environment:
+      PHP_IDE_CONFIG: serverName=Docker
+      #PHP_XDEBUG_ENABLED: 1
+      #XDEBUG_CONFIG: client_host=172.17.0.1 client_port=9003 # Linux users
+      #XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=9005 # MacOS users
+    restart: on-failure
+    volumes:
+      - ./:/var/www/html
+      - ./docker/api/php/xdebug-linux.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    #      - ./docker/php/xdebug-macos.ini:/usr/local/etc/php/conf.d/xdebug.ini
+    depends_on:
+      - intranet-db
+    networks:
+      - intranet-net
+
+  intranet-nginx:
+    container_name: intranet-nginx
+    build:
+      context: ./docker/nginx
+      dockerfile: Dockerfile.dev
+    ports:
+      - "80:80"
+    volumes:
+      - .:/var/www/html
+    depends_on:
+      - intranet-php
+    networks:
+      - intranet-net
+
+volumes:
+  intranet-db:
+
+networks:
+  intranet-net:
+    external: true

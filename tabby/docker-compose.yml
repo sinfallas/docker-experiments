@@ -1,0 +1,23 @@
+version: '3.5'
+services:
+  tabby:
+    image: tabbyml/tabby
+    container_name: tabby
+    privileged: true
+    pull_policy: always
+    runtime: nvidia
+    ulimits:
+      memlock: -1
+    command: serve --model TabbyML/StarCoder-1B --device cuda
+    restart: unless-stopped
+    volumes:
+      - "$HOME/.tabby:/data"
+    ports:
+      - 8080:8080
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]

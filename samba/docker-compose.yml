@@ -1,0 +1,13 @@
+services:
+  samba:
+    image: crazymax/samba:latest
+    container_name: samba
+    network_mode: host
+    volumes:
+      - "./data:/data"
+      - "/home/sinfallas/backup:/share"
+      - "./smb.conf:/etc/samba/smb.conf:ro"
+    environment:
+      - "TZ=America/Caracas"
+      - "SAMBA_LOG_LEVEL=0"
+    restart: always

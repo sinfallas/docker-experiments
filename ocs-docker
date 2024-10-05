@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Made by Sinfallas <sinfallas@yahoo.com>
+# Licence: GPL-2
+
+if [[ "$EUID" != "0" ]]; then
+        echo -e "\e[00;31mERROR: debe ser root.\e[00m"
+        exit 1
+fi
+
+docker volume create portainer_data
+docker run -d -p 8000:8000 -p 9443:9443 --name portainer -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
+docker run -d -p 9001:9001 --name portainer_agent -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes portainer/agent:latest
+
+docker run -d --rm -it --name docker_mysql --hostname mysql -c 512 -m 512m -e PGID=100 -e PUID=1000 -e MYSQL_ROOT_PWD=123456 -e MYSQL_USER=mysql -e MYSQL_USER_PWD=123456 -e MYSQL_USER_DB=test -p 3306:3306 -v data:/var/lib/mysql -v /etc/hosts:/etc/hosts:ro -v /etc/localtime:/etc/localtime:ro woahbase/alpine-mysql:x86_64
+docker run -d -p 8080:80 -p 8443:443 --name inver -e OCS_DB_NAME=inver -e OCS_DB_SERVER=10.1.12.5 -e OCS_DB_PORT=3306 -e OCS_DB_USER=test -e OCS_DB_PASS=123456 -itd ocsinventory/ocsinventory-docker-image:latest
+
+
+
+docker run -itd --name=ocs --publish=8080:80 --publish=8443:443 --restart=always --env="TIMEZONE=America/Caracas" --env="OCS_DBNAME=nombre" --env="OCS_DBSERVER_READ=0.0.0.0" --env="OCS_DBSERVER_WRITE=0.0.0.0" --env="OCS_DBUSER=root" --env="OCS_DBPASS=123456" blinzlerone/ocsinventory-docker-image:latest

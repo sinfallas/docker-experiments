@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Made by Sinfallas <sinfallas@yahoo.com>
+# Licence: GPL-2
+
+clear
+rm -f *.sql
+PGPASSWORD="xxxxxxxxxxxxxxx" pg_dump -s -h 10.10.10.10 -p 5432 -U admin -d db > staging.sql
+PGPASSWORD="yyyyyyyyyy" pg_dump -s -h 11.11.11.11 -p 5432 -U admin -d db > pro.sql
+diff staging.sql pro.sql > /app/reporte.txt
+swaks -4 --to mail@mail.com --from mail2@mail.com --server mail.mail.com:587 -tls --auth LOGIN --auth-user mail2@mail.com --auth-password 123456 --header "Subject: Reporte de DIFF %DATE%" --body "Se adjunta el archivo." --attach /app/reporte.txt
+echo "Finalizado."
+exit 0

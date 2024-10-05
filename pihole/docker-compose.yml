@@ -1,0 +1,35 @@
+services:
+  pihole:
+    container_name: pihole
+    image: pihole/pihole:latest
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+      - "8080:80/tcp"
+    dns:
+      - 127.0.0.1
+    environment:
+      TZ: 'America/Caracas'
+      WEBPASSWORD: 'j79798671.'
+      FTLCONF_LOCAL_IPV4: '192.168.89.17'
+      DNSSEC: 'false'
+      DNS_BOGUS_PRIV: 'false'
+      DNS_FQDN_REQUIRED: 'false'
+      DHCP_ACTIVE: 'false'
+      IPv6: 'true'
+      TEMPERATUREUNIT: 'c'
+      QUERY_LOGGING: 'false'
+      CUSTOM_CACHE_SIZE: '20000'
+      DNSMASQ_LISTENING: 'all'
+      WEBUIBOXEDLAYOUT: 'boxed'
+      WEBTHEME: 'default-auto'
+    volumes:
+      - './etc-pihole:/etc/pihole'
+    cap_add:
+      - NET_ADMIN
+    restart: always
+    networks:
+      - pihole
+
+networks:
+  pihole:

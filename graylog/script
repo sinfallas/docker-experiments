@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Made by Sinfallas <sinfallas@yahoo.com>
+# Licence: GPL-2
+
+if [[ "$EUID" != "0" ]]; then
+        echo "ERROR: Debe ser root"
+        exit 1
+fi
+
+mkdir graylog_data/
+mkdir log
+mkdir mongo_data
+chmod -Rv 777 graylog_data/
+chmod -Rv 777 log/
+chmod -Rv 777 mongo_data/
+
+exit 0

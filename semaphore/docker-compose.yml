@@ -1,0 +1,42 @@
+volumes:
+  semaphore-mysql:
+    driver: local
+services:
+  mysql:
+    image: mysql:8.0
+    hostname: mysql
+    container_name: mysql
+    volumes:
+      - ./mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=VHHMG2SSSpzlQ5j8Y2d8BBIK2GJZyBEn
+      - MYSQL_DATABASE=semaphore
+      - MYSQL_USER=semaphore
+      - MYSQL_PASSWORD=VHHMG2SSSpzlQ5j8Y2d8BBIK2GJZyBEn
+    restart: always
+  semaphore:
+    container_name: semaphore
+    image: semaphoreui/semaphore:latest
+    ports:
+      - 3000:3000
+    environment:
+      - SEMAPHORE_DB_USER=semaphore
+      - SEMAPHORE_DB_PASS=VHHMG2SSSpzlQ5j8Y2d8BBIK2GJZyBEn
+      - SEMAPHORE_DB_HOST=mysql
+      - SEMAPHORE_DB_PORT=3306
+      - SEMAPHORE_DB_DIALECT=mysql
+      - SEMAPHORE_DB=semaphore
+      - SEMAPHORE_PLAYBOOK_PATH=/tmp/semaphore/
+      - SEMAPHORE_ADMIN_PASSWORD=j79798671.
+      - SEMAPHORE_ADMIN_NAME=admin
+      - SEMAPHORE_ADMIN_EMAIL=sinfallas@gmail.com
+      - SEMAPHORE_ADMIN=admin
+      - SEMAPHORE_ACCESS_KEY_ENCRYPTION=ZEreZfJtpmfAFPvRwIv3Xb2OJdAuNpibBLB0HMrnyPI=
+      - ANSIBLE_HOST_KEY_CHECKING=false
+    volumes:
+      - ./inventory/:/inventory:rw
+      - ./authorized-keys/:/authorized-keys:rw
+      - ./config/:/etc/semaphore:rw
+    restart: always
+    depends_on:
+      - mysql

@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Made by Sinfallas <sinfallas@yahoo.com>
+# Licence: GPL-2
+mmctl auth login http://127.0.0.1:8065 --name nombre --username usuario --password-file mipass.txt
+mmctl user create --email email@email.com --username usuario --password password --firstname nombre --lastname apellido --nickname sobrenombre
+exit 0

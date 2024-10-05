@@ -1,0 +1,56 @@
+version: "3"
+services:
+  qemu:
+    container_name: qemu
+    image: qemux/qemu-docker
+    environment:
+      BOOT: "https://dl-cdn.alpinelinux.org/alpine/v3.19/releases/x86_64/alpine-virt-3.19.1-x86_64.iso"
+      RAM_SIZE: "4G"
+      CPU_CORES: "4"
+      DISK_SIZE: "24G"
+      BOOT_INDEX: "10"
+      DEBUG: "N"
+      MACHINE: "q35"
+      ALLOCATE: ""
+      ARGUMENTS: ""
+      DISK_IO: "native"
+      DISK_FMT: "qcow2"
+      DISK_FLAGS: ""
+      DISK_CACHE: "none"
+      DISK_DISCARD: "on"
+      DISK_ROTATION: "1"
+      GPU: "N"
+      VGA: "virtio"
+      DISPLAY: "web"
+      DHCP: "N"
+      HOST_PORTS: ""
+      VM_NET_DEV: ""
+      VM_NET_TAP: "qemu"
+      #MAC: ""
+      #VM_NET_MAC: "$MAC"
+      VM_NET_HOST: "QEMU"
+      DNSMASQ_OPTS: ""
+      DNSMASQ: "/usr/sbin/dnsmasq"
+      DNSMASQ_CONF_DIR: "/etc/dnsmasq.d"
+      TPM: "Y"
+      BOOT_MODE: "legacy"
+      HV: "Y"
+      KVM: "Y"
+      CPU_FLAGS: ""
+      CPU_MODEL: ""
+      DEF_MODEL: "qemu64"
+      SERIAL: "mon:stdio"
+      USB: "qemu-xhci,id=xhci"
+      MONITOR: "telnet:localhost:7100,server,nowait,nodelay"
+    devices:
+      - /dev/kvm
+    device_cgroup_rules:
+      - 'c *:* rwm'
+    volumes:
+      - /mnt/ssd/images:/storage
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+    stop_grace_period: 2m
+    restart: on-failure
