@@ -1,7 +1,7 @@
 services:
     routeros:
         container_name: "mikrotik"
-        image: cnsoluciones/mikrotik:7.6
+        image: cnsoluciones/mikrotik:latest
         privileged: true
         ports:
             - "21:21" #ftp
